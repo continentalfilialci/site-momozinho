@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Para Meu Momozinho ❤️</title>
+
+<style>
+body {
+  margin:0; font-family: Arial; background:#000; color:#fff;
+  display:flex; justify-content:center; align-items:center;
+  height:100vh; overflow:hidden;
+}
+
+.app {
+  width:360px; height:640px;
+  background:#111; border-radius:30px;
+  overflow:hidden; position:relative;
+  box-shadow:0 0 30px rgba(255,0,80,0.3);
+}
+
+.screen {
+  width:100%; height:100%; position:absolute;
+  display:flex; flex-direction:column;
+  justify-content:center; align-items:center;
+  text-align:center; padding:20px;
+}
+
+.hidden { display:none; }
+
+input { padding:10px; border-radius:10px; border:none; }
+button {
+  padding:10px 20px; border:none; border-radius:10px;
+  background:#ff4d6d; color:white; cursor:pointer;
+  margin-top:10px; transition:0.3s;
+}
+button:hover { transform:scale(1.05); }
+
+.slides { display:none; width:100%; border-radius:15px; }
+
+.carta {
+  position:absolute; width:90%; background:#111;
+  border-radius:15px; padding:20px;
+  display:none; opacity:0; transition:0.5s;
+}
+.carta.show { opacity:1; }
+
+.final-screen {
+  position:absolute; width:100%; height:100%;
+  background:#000; display:none;
+  flex-direction:column; justify-content:center; align-items:center;
+  animation: fadeIn 2s;
+}
+
+.final-screen img {
+  width:80%; border-radius:20px;
+}
+
+.sim-btn {
+  background:#00c853;
+  animation:pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%{transform:scale(1)}
+  50%{transform:scale(1.1)}
+  100%{transform:scale(1)}
+}
+
+.heart { position:absolute; top:-10px; animation:fall linear forwards; }
+@keyframes fall { to { transform:translateY(700px);} }
+
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<!-- LOGIN -->
+<div class="screen" id="login">
+  <h2>Tenta lembrar nossa data ❤️</h2>
+  <input type="password" id="senha" placeholder="DD/MM/AAAA">
+  <button onclick="entrar()">Entrar</button>
+</div>
+
+<!-- MAIN -->
+<div class="screen hidden" id="main">
+  <h2>Thabita ❤️</h2>
+  <div id="contador"></div>
+
+  <img class="slides" src="foto1.jpg">
+  <img class="slides" src="foto2.jpg">
+  <img class="slides" src="foto3.jpg">
+  <img class="slides" src="foto4.jpg">
+  <img class="slides" src="foto5.jpg">
+
+  <button onclick="abrirCarta()">💌 Abrir carta</button>
+</div>
+
+<!-- CARTA -->
+<div class="carta" id="carta">
+  <h3>Para você ❤️</h3>
+  <p id="textoCarta"></p>
+
+  <button onclick="mostrarSurpresa()">🎁 Não clica aqui</button>
+
+  <div id="surpresa" style="display:none;">
+    <h3>💍 Quer continuar comigo pra sempre?</h3>
+    <button class="sim-btn" onclick="respostaSim()">SIM ❤️</button>
+  </div>
+
+  <button onclick="fecharCarta()">Fechar</button>
+</div>
+
+<!-- FINAL -->
+<div class="final-screen" id="final">
+  <h2>Agora você não tem mais escolha 😄❤️</h2>
+  <img src="foto1.jpg">
+  <p>Te amo pra sempre, meu momozinho ❤️</p>
+</div>
+
+<audio id="musica" loop>
+  <source src="musica.mp3" type="audio/mpeg">
+</audio>
+
+</div>
+
+<script>
+
+// LOGIN + MUSICA
+function entrar(){
+  const senha = document.getElementById('senha').value;
+  if(senha === "01/01/2025"){
+    document.getElementById('login').classList.add('hidden');
+    document.getElementById('main').classList.remove('hidden');
+    document.getElementById('musica').play();
+  } else alert('Data errada 😢');
+}
+
+// SLIDES
+let index = 0;
+const slides = document.getElementsByClassName("slides");
+function showSlides(){
+  for(let i=0;i<slides.length;i++) slides[i].style.display='none';
+  index++;
+  if(index>slides.length) index=1;
+  slides[index-1].style.display='block';
+  setTimeout(showSlides,3000);
+}
+showSlides();
+
+// CONTADOR
+const dataInicio = new Date("2025-01-01");
+setInterval(()=>{
+  const diff = new Date()-dataInicio;
+  const d=Math.floor(diff/86400000);
+  document.getElementById('contador').innerText=`${d} dias juntos ❤️`;
+},1000);
+
+// CARTA
+const texto = "Meu amor... você é tudo pra mim. Eu quero viver cada momento ao seu lado pra sempre ❤️";
+let i=0;
+
+function abrirCarta(){
+  const c=document.getElementById('carta');
+  c.style.display='block';
+  setTimeout(()=>c.classList.add('show'),10);
+  i=0; document.getElementById('textoCarta').innerHTML='';
+  digitar();
+}
+
+function digitar(){
+  if(i<texto.length){
+    document.getElementById('textoCarta').innerHTML+=texto[i];
+    i++; setTimeout(digitar,40);
+  }
+}
+
+function fecharCarta(){
+  const c=document.getElementById('carta');
+  c.classList.remove('show');
+  setTimeout(()=>c.style.display='none',500);
+}
+
+function mostrarSurpresa(){
+  document.getElementById('surpresa').style.display='block';
+}
+
+function respostaSim(){
+  document.getElementById('carta').style.display='none';
+  document.getElementById('main').style.display='none';
+  document.getElementById('final').style.display='flex';
+}
+
+// CORAÇÕES
+setInterval(()=>{
+  const h=document.createElement('div');
+  h.className='heart';
+  h.innerText='❤️';
+  h.style.left=Math.random()*300+'px';
+  h.style.fontSize=Math.random()*20+10+'px';
+  h.style.animationDuration=Math.random()*3+2+'s';
+  document.querySelector('.app').appendChild(h);
+  setTimeout(()=>h.remove(),5000);
+},400);
+
+</script>
+
+</body>
+</html>
